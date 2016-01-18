@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:title="@string/pref_diagnostic_monitoring_title"
+        android:key="pref_diagnostic_monitoring_settings">
+        <CheckBoxPreference android:title="CPU Monitoring"
+            android:defaultValue="false"
+            android:summary="This option if selected will allow the application to monitor your background app's CPU usage."
+            android:key="pref_cpuMonitoring" />
+        <ListPreference android:title="CPU Threshold"
+        android:summary="Select the limit for CPU monitoring"
+        android:key="pref_cpuThreshold"
+        android:defaultValue="1"
+        android:entries="@array/cpu_threshold"
+        android:entryValues="@array/cpu_threshold_values" />
+        <ListPreference android:title="CPU Polling Interval"
+            android:summary="Select the interval for how often to check processes"
+            android:key="pref_cpuPollingInterval"
+            android:defaultValue="1"
+            android:entries="@array/cpu_polling_interval"
+            android:entryValues="@array/cpu_polling_interval_values" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>
