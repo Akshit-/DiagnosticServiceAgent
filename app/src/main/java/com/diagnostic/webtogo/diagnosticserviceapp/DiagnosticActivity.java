@@ -6,6 +6,9 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -35,6 +38,50 @@ public class DiagnosticActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         context = this.getApplicationContext();
+
+        //runningservices();
+    }
+
+
+    //testing code
+    public void runningservices(){
+        ActivityManager activityManager = (ActivityManager) this.getSystemService(Context.ACTIVITY_SERVICE);
+
+        List<ActivityManager.AppTask>  l = activityManager.getAppTasks();
+
+        Log.d("DService", "runningservices:");
+
+        for(ActivityManager.AppTask r : l){
+
+//            Log.d("DService", r.processName+" : "+r.importance +" : "+ r.importanceReasonComponent);
+//            Log.d("DService", r.+" : "+r.baseActivity +" : "+ r.id);
+
+//            Log.d("DService", r.process +" : "+ r.foreground +" : "+ r.uid + r.);
+
+            Log.d("DService", r.toString());
+
+
+        }
+
+        PackageManager pm = this.getPackageManager();
+        List<PackageInfo> list = pm.getInstalledPackages(0);
+
+        //for(PackageInfo pi : list) {
+        ApplicationInfo ai = null;
+        try {
+            ai = pm.getApplicationInfo("com.zomut.watchdoglite", 0);
+            System.out.println(">>>>>>packages is<<<<<<<<" + ai.processName);
+
+            if ((ai.flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
+                System.out.println(">>>>>>packages is system package");
+            }
+
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+
+
+        //}
 
     }
 

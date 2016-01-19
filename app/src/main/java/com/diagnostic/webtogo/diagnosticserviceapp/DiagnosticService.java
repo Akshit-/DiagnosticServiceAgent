@@ -6,6 +6,9 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -68,6 +71,9 @@ public class DiagnosticService extends IntentService {
     }
 
     private void sendNotification() {
+
+        //TODO: comment this code and call the clientApp function where notification will be handled
+
         mBuilder =
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(R.drawable.ic_launcher)
@@ -94,7 +100,7 @@ public class DiagnosticService extends IntentService {
 
         long total = 0;
         try {
-            p = Runtime.getRuntime().exec("top -n 1");//| awk '{if (match($9, \"u0*\") != 0 && $8 == \"bg\") print}'");
+            p = Runtime.getRuntime().exec("top -n 1");
             in = new BufferedReader(new InputStreamReader(p.getInputStream()));
             //Log.d("DService", "start cpu monitoring");
 
@@ -112,7 +118,6 @@ public class DiagnosticService extends IntentService {
                     String uid = lineTokens[8].trim();
                     String processName = lineTokens[9].trim();
                     processModelList.add(new DiagnosticProcessModel(pid,uid,cpu,processName));
-
                 }
             }
             p.waitFor();
@@ -137,6 +142,31 @@ public class DiagnosticService extends IntentService {
     public void killProcessByPID(int pid){
         android.os.Process.killProcess(pid);
     }
+
+
+    public void filterOutSystemProcess(){
+
+        PackageManager pm = this.getPackageManager();
+
+        ApplicationInfo ai = null;
+        try {
+            for(DiagnosticProcessModel model : processModelList) {
+
+                String pNAme = model.processName.split(":")[0];
+                ai = pm.getApplicationInfo(model.processName, 0);
+
+                System.out.println("package :" + ai.processName);
+
+                if ((ai.flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
+                    model.systemProcess = true;
+                }
+            }
+
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     public void getActivityFromPID(int pid){
 //        ActivityManager activityManager = (ActivityManager) this.getSystemService(Context.ACTIVITY_SERVICE);

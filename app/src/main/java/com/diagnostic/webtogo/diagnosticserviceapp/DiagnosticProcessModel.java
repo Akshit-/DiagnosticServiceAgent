@@ -9,6 +9,7 @@ public class DiagnosticProcessModel {
     String uid;  //unique id
     long cpu; //cpu %
     String processName;
+    boolean systemProcess;
 
     DiagnosticProcessModel(int pid, String uid, long cpu, String processName){
         this.pid = pid;
